@@ -1,0 +1,77 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body style="font-family: Arial,serif">
+    <form id="loginformA" action="translate" method="post">
+        <label for="text">Text to translate:</label><input type="checkbox" id="together"/><label for="together">no split</label>
+        <textarea id="text" name="text" style="width: 100%; height: 100px; resize: vertical;"></textarea>
+        <br>
+        <button id="translate">Translate</button>
+        <br>
+        <label for="result">Result:</label>
+        <textarea id="result" name="text" readonly style="width: 100%; height: 200px; resize: vertical;"></textarea>
+        <button id="copy">Copy to clipboard</button>
+        <span id="status" style="display: none">copied</span>
+    </form>
+
+    <script>
+        $('#translate').click(function (e) {
+            e.preventDefault();
+
+            var request = $.ajax({
+                url: "translate",
+                method: "POST",
+                data: {
+                    text: $('#text').val(),
+                    together: $('#together').prop('checked'),
+                },
+                dataType: "json"
+            });
+
+            request.done(function (msg) {
+                $("#result").html(JSON.stringify(msg, null, 2));
+                if (msg) {
+                    $('#copy').prop('disabled', false);
+
+                } else {
+
+                }
+            });
+
+            request.fail(function (jqXHR, textStatus) {
+                alert( "Request failed: " + textStatus );
+            });
+        });
+        function copyToClipboard(text) {
+            $('#status').show();
+            setTimeout(function () {
+                $('#status').hide();
+            }, 2000);
+            if (window.clipboardData && window.clipboardData.setData) {
+                // IE specific code path to prevent textarea being shown while dialog is visible.
+                return clipboardData.setData("Text", text);
+
+            } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+                var textarea = document.createElement("textarea");
+                textarea.textContent = text;
+                textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+                } catch (ex) {
+                    console.warn("Copy to clipboard failed.", ex);
+                    return false;
+                } finally {
+                    document.body.removeChild(textarea);
+                }
+            }
+        }
+        $('#copy').click(function (e) {
+            e.preventDefault();
+            copyToClipboard($("#result").val());
+        });
+    </script>
+</body>
+</html>

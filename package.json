@@ -1,0 +1,11 @@
+{
+  "name": "gtranslate",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "configstore": "*",
+    "express": "^4.16.2",
+    "request": "*",
+    "safe-eval": "*"
+  }
+}
