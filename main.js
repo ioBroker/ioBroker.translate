@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-const languages = ['de', 'ru', 'pt', 'nl', 'fr', 'it'];
+const languages = ['de', 'ru', 'pt', 'nl', 'fr', 'it', 'es', 'pl'];
 
 function translateAll(text, cb, i, result) {
     i = i || 0;
